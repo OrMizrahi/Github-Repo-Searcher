@@ -1,0 +1,36 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+
+.my-custom-header {
+    width: 800px;
+    margin: auto;
+    margin-bottom: 60px;
+}
+
+#search {
+    margin: auto;
+    padding: 30px 30px;
+    width: 600px ;
+    font-size: 21px;
+}
+
+#search:focus {
+    border-color: #7952b3 !important;
+    box-shadow: 0 0 0 3px rgba(121,82,179,.25) !important;
+}
