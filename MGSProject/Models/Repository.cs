@@ -1,5 +1,7 @@
 ﻿
 
+using Newtonsoft.Json;
+
 namespace MGSProject.Models
 {
     public class Repository
