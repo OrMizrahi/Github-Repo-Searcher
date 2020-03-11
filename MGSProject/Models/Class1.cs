@@ -5,7 +5,6 @@ using System.Web;
 
 namespace MGSProject.Models
 {
-  
     public class Item
     {
         public string html_url { get; set; }
