@@ -2,7 +2,7 @@
 {
     using System.Data.Entity.Migrations;
     
-    public partial class chnagedhtml_url_name : DbMigration
+    public partial class chnagedhtml_url_name : DbMigration 
     {
         public override void Up()
         {
