@@ -24,17 +24,17 @@
         $("#loader").show();
         $(".table").hide();
 
-        $.post("/Home/SaveRepos",
+        $.post("/Home/SendJsonToClient",
             { repoName: searchValue },
-            function(data) {
-                if (data == null) {
+            function(jsonData) {
+                if (jsonData == null) {
                     alert("Error!");
                 } else {
                     $(".table").show();
                     $("#no-results").hide();
                     $("#loader").hide();
                     $("#repositories").html("");
-                    const res = JSON.parse(data).items;
+                    const res = JSON.parse(jsonData).items;
 
                     if (res.length == 0) {
                         $("#no-results").show();
@@ -50,5 +50,6 @@
                         });
                 }
             });
+        $.get("/Home/SaveToDatabase2");
     }
 });
