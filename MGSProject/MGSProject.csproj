@@ -168,6 +168,10 @@
     <Compile Include="Migrations\202003171534411_changedRepository.designer.cs">
       <DependentUpon>202003171534411_changedRepository.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202003171725188_changedRepositoryIdToId.cs" />
+    <Compile Include="Migrations\202003171725188_changedRepositoryIdToId.designer.cs">
+      <DependentUpon>202003171725188_changedRepositoryIdToId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Class1.cs" />
     <Compile Include="Models\MainDBContext.cs" />
@@ -345,6 +349,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202003171534411_changedRepository.resx">
       <DependentUpon>202003171534411_changedRepository.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003171725188_changedRepositoryIdToId.resx">
+      <DependentUpon>202003171725188_changedRepositoryIdToId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

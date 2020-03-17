@@ -13,10 +13,9 @@
         goToController();
     });
 
-
     function goToController() {
         const searchValue = $("#search").val();
-
+       
         if (searchValue === "") {
             return;
         }
@@ -50,6 +49,6 @@
                         });
                 }
             });
-        $.get("/Home/SaveToDatabase2");
+        $.get("/Home/SaveToDatabase", { repoName: searchValue });
     }
 });

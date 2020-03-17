@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.UI;
 using MGSProject.Models;
 using Newtonsoft.Json;
 
@@ -16,7 +8,6 @@ namespace MGSProject.Controllers
 {
     public class HomeController : Controller
     {
-        private string _json;
         public ActionResult Index()
         {
             return View();
@@ -25,38 +16,43 @@ namespace MGSProject.Controllers
         [HttpPost]
         public ActionResult SendJsonToClient(string repoName)
         {
-            using (var webClient = new WebClient())
-            {
-                webClient.Headers["User-Agent"] = Request.Headers["User-Agent"];
-                _json = webClient.DownloadString($"https://api.github.com/search/repositories?q={repoName}");
-                
-                return Json(_json);
-            }
+            var json = GetJsonFromUrl($"https://api.github.com/search/repositories?q={repoName}");
+            return Json(json);
         }
 
         [HttpGet]
-        public async Task SaveToDatabase()
+        public void SaveToDatabase(string repoName)
         {
-            var result = JsonConvert.DeserializeObject<RootObject>(_json);
-
-            using (var db = new MainDbContext())
-            {
-                foreach (var htmlUrl in result.items.Select(repo => repo.html_url))
+                var json = GetJsonFromUrl($"https://api.github.com/search/repositories?q={repoName}");
+                var result = JsonConvert.DeserializeObject<RootObject>(json);
+                using (var db = new MainDbContext())
                 {
-                    var repository = await db.Repositories.FirstOrDefaultAsync(el => el.HtmlUrl == htmlUrl);
-                    if (repository == null)
+                    foreach (var htmlUrl in result.items.Select(repo => repo.html_url))
                     {
-                        repository = new Repository
+                        var repository = db.Repositories.FirstOrDefault(el => el.HtmlUrl == htmlUrl);
+                        if (repository == null)
                         {
-                            HtmlUrl = htmlUrl,
-                            NumberOfAppearances = 0
-                        };
-                        db.Repositories.Add(repository);
-                    }
+                            repository = new Repository
+                            {
+                                HtmlUrl = htmlUrl,
+                                NumberOfAppearances = 0
+                            };
+                            db.Repositories.Add(repository);
+                        }
 
-                    repository.NumberOfAppearances++;
-                    await db.SaveChangesAsync();
+                        repository.NumberOfAppearances++;
+                        db.SaveChanges();
+                    }
                 }
+        }
+
+        private string GetJsonFromUrl(string url)
+        {
+            using (var webClient = new WebClient())
+            {
+                webClient.Headers["User-Agent"] = Request.Headers["User-Agent"];
+                var json = webClient.DownloadString(url);
+                return json;
             }
         }
     }
