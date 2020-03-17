@@ -16,8 +16,6 @@ namespace MGSProject.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly MainDbContext _dbContext = new MainDbContext();
-        
         public ActionResult Index()
         {
             return View();
@@ -25,34 +23,39 @@ namespace MGSProject.Controllers
 
 
         [HttpPost]
-        public ActionResult SaveRepos(string repoName)
+        public async Task<ActionResult> SaveRepos(string repoName)
         {
             using (var webClient = new WebClient())
             {
                 webClient.Headers["User-Agent"] = Request.Headers["User-Agent"];
                 var json = webClient.DownloadString($"https://api.github.com/search/repositories?q={repoName}");
                 var result = JsonConvert.DeserializeObject<RootObject>(json);
-
+                
                 foreach (var repo in result.items)
                 {
-                    var currentHtmlUrl = repo.html_url;
-                    var repository = _dbContext.Repositories.SingleOrDefault(el => el.HtmlUrl == currentHtmlUrl);
-                    if (repository == null)
-                    {
-                        repository = new Repository
-                        {
-                            HtmlUrl = currentHtmlUrl,
-                            NumberOfAppearances = 0
-                        };
-                        _dbContext.Repositories.Add(repository);
-                    }
-
-                    repository.NumberOfAppearances++;
+                   await SaveToDatabase(repo.html_url);
                 }
 
-                _dbContext.SaveChanges();
-
                 return Json(json);
+            }
+        }
+
+        private static async Task SaveToDatabase(string htmlUrl)
+        {
+            using (var db = new MainDbContext())
+            {
+                var repository = await db.Repositories.FirstOrDefaultAsync(el => el.HtmlUrl == htmlUrl);
+                if (repository == null)
+                {
+                    repository = new Repository
+                    {
+                        HtmlUrl = htmlUrl,
+                        NumberOfAppearances = 0
+                    };
+                    db.Repositories.Add(repository);
+                }
+                repository.NumberOfAppearances++;
+                await db.SaveChangesAsync();
             }
         }
     }
